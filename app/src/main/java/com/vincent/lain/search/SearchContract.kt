@@ -7,6 +7,7 @@ class SearchContract {
     interface PresenterInterface {
         fun getSearchResults(query: String)
         fun stop()
+        fun onDestroy()
     }
 
     interface ViewInterface {

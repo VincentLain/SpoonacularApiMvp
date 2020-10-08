@@ -8,6 +8,7 @@ class MainContract {
         fun getMyMenusList()
         fun onDelete(selectedMenus: HashSet<Menu>)
         fun stop()
+        fun onDestroy()
     }
 
     interface ViewInterface {

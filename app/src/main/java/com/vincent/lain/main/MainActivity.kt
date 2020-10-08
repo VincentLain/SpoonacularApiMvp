@@ -22,7 +22,7 @@ import com.vincent.lain.model.Menu
 class MainActivity : AppCompatActivity(), MainContract.ViewInterface {
 
     private val TAG = MainActivity::class.simpleName
-    private lateinit var mainPresenter: MainContract.PresenterInterface
+    private lateinit var presenter: MainContract.PresenterInterface
 
 
     private lateinit var menusRecyclerView: RecyclerView
@@ -39,12 +39,12 @@ class MainActivity : AppCompatActivity(), MainContract.ViewInterface {
 
     override fun onStart() {
         super.onStart()
-        mainPresenter.getMyMenusList()
+        presenter.getMyMenusList()
     }
 
     override fun onStop() {
         super.onStop()
-        mainPresenter.stop()
+        presenter.stop()
     }
 
     private fun setupViews() {
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), MainContract.ViewInterface {
 
     private fun setupPresenter() {
         val dataSource = LocalDataSource(application)
-        mainPresenter = MainPresenter(this, dataSource)
+        presenter = MainPresenter(this, dataSource)
     }
 
     override fun displayMenus(menuList: List<Menu>) {
@@ -108,8 +108,13 @@ class MainActivity : AppCompatActivity(), MainContract.ViewInterface {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.deleteMenuItem) {
-            mainPresenter.onDelete(adapter.selectedMenus)
+            presenter.onDelete(adapter.selectedMenus)
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
     }
 }

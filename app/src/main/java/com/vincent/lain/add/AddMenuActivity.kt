@@ -17,7 +17,7 @@ class AddMenuActivity : AppCompatActivity(), AddMenuContract.ViewInterface {
 
     private lateinit var titleEditText: EditText
     private lateinit var menuImageView: ImageView
-    private lateinit var addMenuPresenter: AddMenuContract.PresenterInterface
+    private lateinit var presenter: AddMenuContract.PresenterInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class AddMenuActivity : AppCompatActivity(), AddMenuContract.ViewInterface {
 
     fun setupPresenter() {
         val dataSource = LocalDataSource(application)
-        addMenuPresenter = AddMenuPresenter(this, dataSource)
+        presenter = AddMenuPresenter(this, dataSource)
     }
 
     fun setupViews() {
@@ -72,8 +72,13 @@ class AddMenuActivity : AppCompatActivity(), AddMenuContract.ViewInterface {
         val title = titleEditText.text.toString()
         val posterPath = if (menuImageView.tag != null) menuImageView.tag.toString() else ""
 
-        addMenuPresenter.addMenu(title, posterPath)
+        presenter.addMenu(title, posterPath)
 
+    }
+
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
     }
 
 

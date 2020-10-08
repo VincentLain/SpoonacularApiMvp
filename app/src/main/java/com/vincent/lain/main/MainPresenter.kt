@@ -11,7 +11,7 @@ import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
 class MainPresenter(
-    private var viewInterface: MainContract.ViewInterface,
+    private var viewInterface: MainContract.ViewInterface?,
     private var dataSource: LocalDataSource
 ) : MainContract.PresenterInterface {
 
@@ -29,15 +29,15 @@ class MainPresenter(
 
         override fun onNext(menuList: List<Menu>) {
             if(menuList.isEmpty()) {
-                viewInterface.displayNoMenus()
+                viewInterface?.displayNoMenus()
             } else {
-                viewInterface.displayMenus(menuList)
+                viewInterface?.displayMenus(menuList)
             }
         }
 
         override fun onError(@NonNull e: Throwable)  {
             Log.d(TAG, "Error fetching menu list.", e)
-            viewInterface.displayError("Error fetching menu list.")
+            viewInterface?.displayError("Error fetching menu list.")
         }
 
     }
@@ -55,14 +55,19 @@ class MainPresenter(
             dataSource.delete(menu)
         }
         if (selectedMenus.size == 1) {
-            viewInterface.displayMessage("Menu deleted")
+            viewInterface?.displayMessage("Menu deleted")
         } else if(selectedMenus.size > 1){
-            viewInterface.displayMessage("Menus deleted")
+            viewInterface?.displayMessage("Menus deleted")
         }
     }
 
     override fun stop() {
         compositeDisposable.clear()
+    }
+
+    override fun onDestroy() {
+        viewInterface = null
+        compositeDisposable.dispose()
     }
 
 }

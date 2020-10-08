@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -24,7 +23,7 @@ class SearchActivity : AppCompatActivity(), SearchContract.ViewInterface {
     private lateinit var adapter: SearchAdapter
     private lateinit var noMenusTextView: TextView
     private lateinit var progressBar: ProgressBar
-    private lateinit var searchPresenter: SearchPresenter
+    private lateinit var presenter: SearchPresenter
     private lateinit var query: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +42,12 @@ class SearchActivity : AppCompatActivity(), SearchContract.ViewInterface {
 
     override fun onStart() {
         super.onStart()
-        searchPresenter.getSearchResults(query)
+        presenter.getSearchResults(query)
     }
 
     override fun onStop() {
         super.onStop()
-        searchPresenter.stop()
+        presenter.stop()
     }
 
     private fun setupViews() {
@@ -57,7 +56,7 @@ class SearchActivity : AppCompatActivity(), SearchContract.ViewInterface {
 
     private fun setupPresenter() {
         val dataSource = RemoteDataSource()
-        searchPresenter = SearchPresenter(this, dataSource)
+        presenter = SearchPresenter(this, dataSource)
     }
 
     override fun showToast(string: String) {
@@ -80,6 +79,11 @@ class SearchActivity : AppCompatActivity(), SearchContract.ViewInterface {
 
     override fun displayError(string: String) {
         showToast(string)
+    }
+
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
     }
 
     companion object {

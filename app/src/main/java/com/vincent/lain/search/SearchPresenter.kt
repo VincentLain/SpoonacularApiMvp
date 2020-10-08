@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
-class SearchPresenter(private var viewInterface: SearchContract.ViewInterface,
+class SearchPresenter(private var viewInterface: SearchContract.ViewInterface?,
                       private var dataSource: RemoteDataSource
 ) : SearchContract.PresenterInterface {
 
@@ -22,12 +22,12 @@ class SearchPresenter(private var viewInterface: SearchContract.ViewInterface,
         get() = object : DisposableObserver<MenuResponse>() {
 
             override fun onNext(@NonNull menuResponse: MenuResponse) {
-                viewInterface.displayResult(menuResponse)
+                viewInterface?.displayResult(menuResponse)
             }
 
             override fun onError(@NonNull e: Throwable) {
                 e.printStackTrace()
-                viewInterface.displayError("Error fetching Menus Data")
+                viewInterface?.displayError("Error fetching Menus Data")
             }
 
             override fun onComplete() {}
@@ -44,5 +44,10 @@ class SearchPresenter(private var viewInterface: SearchContract.ViewInterface,
 
     override fun stop() {
         compositeDisposable.clear()
+    }
+
+    override fun onDestroy() {
+        viewInterface = null
+        compositeDisposable.dispose()
     }
 }
